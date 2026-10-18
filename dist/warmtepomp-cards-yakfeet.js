@@ -7,11 +7,20 @@
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const isNum = (v) => v !== null && v !== undefined && !isNaN(v);
-const fmt = (v, d = 1, u = '') => (isNum(v) ? Number(v).toFixed(d).replace('.', ',') + u : '–');
+const fmt = (v, d = 1, u = '') =>
+  isNum(v) ? Number(v).toLocaleString('nl-NL', { minimumFractionDigits: d, maximumFractionDigits: d }) + u : '–';
+const STOPS = [[0, [47, 128, 208]], [0.3, [60, 190, 235]], [0.55, [250, 190, 60]], [0.8, [245, 120, 40]], [1, [225, 50, 40]]];
 const tempColor = (t, lo = 15, hi = 60) => {
   if (!isNum(t)) return '#9aa5b1';
   const k = clamp((t - lo) / (hi - lo), 0, 1);
-  return `hsl(${Math.round(210 - 205 * k)} 80% 52%)`;
+  for (let i = 1; i < STOPS.length; i++) {
+    if (k <= STOPS[i][0]) {
+      const [k0, c0] = STOPS[i - 1], [k1, c1] = STOPS[i];
+      const f = (k - k0) / (k1 - k0);
+      return `rgb(${c0.map((v, j) => Math.round(v + (c1[j] - v) * f)).join(',')})`;
+    }
+  }
+  return 'rgb(225,50,40)';
 };
 const ON_STATES = ['on', 'true', 'heating', 'heat', 'running', 'active', 'defrosting', 'open'];
 
@@ -78,9 +87,9 @@ class WPBase extends HTMLElement {
       .chip.on{background:var(--primary-color);color:var(--text-primary-color,#fff)}
       .chip.warn{background:var(--error-color,#db4437);color:#fff}
       .chip.heat{background:#e8590c;color:#fff}
-      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-top:6px}
+      .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:8px;margin-top:6px}
       .stat{background:var(--secondary-background-color);border-radius:12px;padding:8px 10px;text-align:center}
-      .stat b{display:block;font-size:1.05rem;color:var(--primary-text-color);font-weight:600}
+      .stat b{display:block;white-space:nowrap;font-size:1.05rem;color:var(--primary-text-color);font-weight:600}
       .stat span{font-size:.72rem;color:var(--secondary-text-color)}
       @keyframes spin{to{transform:rotate(360deg)}}
       @keyframes flow{to{stroke-dashoffset:-32}}
@@ -153,18 +162,18 @@ class AtlanticExplorerCard extends WPBase {
       <!-- waterdoorsnede -->
       <rect x="116" y="184" width="128" height="204" rx="12" fill="url(#${u}w)" opacity=".92" data-e="water_heater"/>
       <g clip-path="url(#${u}c)" pointer-events="none">
-        <path d="M128 232 h104 a10 10 0 0 1 0 20 h-104 a10 10 0 0 0 0 20 h104 a10 10 0 0 1 0 20 h-104 a10 10 0 0 0 0 20 h104"
-              fill="none" stroke="${hp ? '#ff922b' : '#ffffff'}" stroke-opacity="${hp ? 1 : .45}" stroke-width="4" stroke-linecap="round"
+        <path d="M128 314 h104 a10 10 0 0 1 0 20 h-104 a10 10 0 0 0 0 20 h104"
+              fill="none" stroke="#ffffff" stroke-opacity="${hp ? .9 : .4}" stroke-width="4" stroke-linecap="round"
               ${hp ? 'class="flowline" style="--flow:1.8s"' : ''}/>
         <line x1="124" y1="372" x2="236" y2="372" stroke="${heater ? '#ff3b30' : '#ffffff'}" stroke-opacity="${heater ? 1 : .5}" stroke-width="6" stroke-linecap="round" ${heater ? 'class="glow"' : ''}/>
         <rect x="116" y="184" width="22" height="204" fill="#fff" opacity=".18"/>
       </g>
-      <text x="180" y="300" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" stroke="#00000033" stroke-width=".6" data-e="tank_top">${fmt(top, 1)}°</text>
-      <text x="180" y="322" text-anchor="middle" font-size="12" fill="#fff" opacity=".9">${warmPct === null ? '' : warmPct + '% warm'}</text>
+      <text x="180" y="262" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" stroke="#00000033" stroke-width=".6" data-e="tank_top">${fmt(top, 1)}°</text>
+      <text x="180" y="284" text-anchor="middle" font-size="12" fill="#fff" opacity=".9">${warmPct === null ? '' : warmPct + '% warm'}</text>
       <!-- sensoren -->
       ${onlyMid ? `
-      <circle cx="244" cy="286" r="4" fill="#fff" stroke="#555"/><line x1="248" y1="286" x2="276" y2="286" stroke="#8a96a3"/>
-      <text x="280" y="284" class="lbl">Midden</text><text x="280" y="300" class="val" data-e="tank_temp">${fmt(top, 1, '°')}</text>` : `
+      <circle cx="244" cy="262" r="4" fill="#fff" stroke="#555"/><line x1="248" y1="262" x2="276" y2="262" stroke="#8a96a3"/>
+      <text x="280" y="260" class="lbl">Midden</text><text x="280" y="276" class="val" data-e="tank_temp">${fmt(top, 1, '°')}</text>` : `
       <circle cx="244" cy="198" r="4" fill="#fff" stroke="#555"/><line x1="248" y1="198" x2="276" y2="198" stroke="#8a96a3"/>
       <text x="280" y="196" class="lbl">Boven</text><text x="280" y="212" class="val" data-e="tank_top">${fmt(top, 1, '°')}</text>
       <circle cx="244" cy="376" r="4" fill="#fff" stroke="#555"/><line x1="248" y1="376" x2="276" y2="376" stroke="#8a96a3"/>
@@ -252,7 +261,7 @@ class PanasonicMonoblockCard extends WPBase {
 
     const circulating = running || (isNum(flow) && flow > 1);
     const supC = tempColor(sup, 20, 55), retC = tempColor(ret, 20, 55);
-    const avgC = tempColor(isNum(sup) && isNum(ret) ? (sup + ret) / 2 : null, 20, 55);
+    const avgC = tempColor(isNum(sup) && isNum(ret) ? sup * 0.7 + ret * 0.3 : null, 20, 55);
     const flowDur = isNum(flow) ? clamp(3.2 - flow * 0.18, 0.6, 3.2) : 1.6;
     const fanDur = isNum(compHz) && compHz > 0 ? clamp(2 - compHz / 60, 0.5, 2) : 1.1;
     const showR = c.show_radiators !== false, showF = c.show_floor !== false;
@@ -262,8 +271,8 @@ class PanasonicMonoblockCard extends WPBase {
       ? `<path class="flowline" style="--flow:${flowDur}s" stroke="#ffffff" stroke-opacity=".7" stroke-width="${w}" fill="none" d="PATH"/>` : '';
 
     // paden
-    const pSupplyMain = 'M124 100 H256 V205';
-    const pReturnMain = 'M124 192 V256 H404 V118';
+    const pSupplyMain = 'M126 100 H256 V205';
+    const pReturnMain = 'M126 262 H404 V118';
     const pRadTo = 'M256 118 H276', pRadFrom = 'M384 118 H404';
     const pFloorTo = 'M256 205 H276', pFloorFrom = 'M384 205 H404 V118';
     const fins = Array.from({ length: 8 }, (_, i) => `<rect x="${282 + i * 12}" y="100" width="8" height="38" rx="3" fill="${radOn ? avgC : '#aab4be'}"/>`).join('');
@@ -275,7 +284,7 @@ class PanasonicMonoblockCard extends WPBase {
       <!-- huis -->
       <polygon points="230,70 330,18 430,70" fill="var(--secondary-background-color)" stroke="#aab4be" stroke-width="2"/>
       <rect x="240" y="70" width="180" height="200" fill="none" stroke="#aab4be" stroke-width="2"/>
-      <line x1="240" y1="160" x2="420" y2="160" stroke="#aab4be" stroke-dasharray="4 5" opacity=".6"/>
+      <line x1="240" y1="163" x2="420" y2="163" stroke="#aab4be" stroke-dasharray="4 5" opacity=".6"/>
       <!-- leidingen -->
       <path d="${pReturnMain}" fill="none" stroke="${retC}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="${pSupplyMain}" fill="none" stroke="${supC}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -285,16 +294,16 @@ class PanasonicMonoblockCard extends WPBase {
         <path d="${pRadTo}" stroke="${supC}" stroke-width="8" fill="none" stroke-linecap="round"/>
         <path d="${pRadFrom}" stroke="${retC}" stroke-width="8" fill="none" stroke-linecap="round"/>
         <rect x="276" y="96" width="108" height="46" rx="6" fill="none" stroke="#8a96a3" stroke-width="2"/>${fins}
-        <text x="330" y="156" text-anchor="middle" class="lbl">Radiatoren</text>` : ''}
+        <text x="330" y="153" text-anchor="middle" class="lbl">Radiatoren</text>` : ''}
       ${showF ? `
         <path d="${pFloorTo}" stroke="${supC}" stroke-width="8" fill="none" stroke-linecap="round"/>
         <path d="${pFloorFrom}" stroke="${retC}" stroke-width="8" fill="none" stroke-linecap="round"/>
         <path d="${zig}" fill="none" stroke="${floorOn ? avgC : '#aab4be'}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
         ${floorOn ? `<path class="flowline" style="--flow:${flowDur}s" d="${zig}" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2.5"/>` : ''}
-        <text x="330" y="250" text-anchor="middle" class="lbl">Vloerverwarming</text>` : ''}
+        <text x="330" y="180" text-anchor="middle" class="lbl">Vloerverwarming</text>` : ''}
       <!-- buitenunit -->
-      <ellipse cx="69" cy="262" rx="62" ry="6" fill="#000" opacity=".12"/>
-      <rect x="12" y="50" width="114" height="206" rx="12" fill="#e9edf1" stroke="#aab4be" stroke-width="2"/>
+      <ellipse cx="69" cy="276" rx="62" ry="6" fill="#000" opacity=".12"/>
+      <rect x="12" y="50" width="114" height="220" rx="12" fill="#e9edf1" stroke="#aab4be" stroke-width="2"/>
       <circle cx="69" cy="112" r="44" fill="#f7f9fb" stroke="#aab4be"/>
       <g class="fan" data-e="comp_hz">
         <path d="M69 112 q-5 -34 13 -34 q8 18 -13 34z M69 112 q34 -5 34 13 q-18 8 -34 -13z M69 112 q5 34 -13 34 q-8 -18 13 -34z M69 112 q-34 5 -34 -13 q18 -8 34 13z" fill="#7f8c99"/>
@@ -302,8 +311,8 @@ class PanasonicMonoblockCard extends WPBase {
       <circle cx="69" cy="112" r="6" fill="#4b5661"/>
       <circle cx="69" cy="112" r="44" fill="none" stroke="#aab4be" stroke-dasharray="2 4"/>
       <rect x="26" y="176" width="86" height="64" rx="8" fill="#d7dde3"/>
-      <text x="69" y="200" text-anchor="middle" class="lbl">Compressor</text>
-      <text x="69" y="222" text-anchor="middle" class="val" data-e="comp_hz">${isNum(compHz) ? fmt(compHz, 0, ' Hz') : running ? 'aan' : 'uit'}</text>
+      <text x="69" y="200" text-anchor="middle" class="lbl" style="fill:#5b6672">Compressor</text>
+      <text x="69" y="222" text-anchor="middle" class="val" data-e="comp_hz" style="fill:#1f2933">${isNum(compHz) ? fmt(compHz, 0, ' Hz') : running ? 'aan' : 'uit'}</text>
       <text x="69" y="42" text-anchor="middle" class="lbl" data-e="ambient">Buiten ${fmt(ambient, 1, '°')}</text>
       ${defrost ? `<rect x="22" y="136" width="94" height="20" rx="10" fill="#e8590c"/><text x="69" y="150" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">ONTDOOIEN</text>` : ''}
       <!-- temperaturen -->
