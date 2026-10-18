@@ -26,6 +26,8 @@ The idea comes from [AMensink/warmtepomp-cards](https://github.com/AMensink/warm
 3. Paste the URL of this repository, choose type **Dashboard** and click **Add**.
 4. Search for **Warmtepomp Cards**, click **Download** and reload the browser (Ctrl+F5).
 
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Yakfeet&repository=warmtepomp-cards-yakfeet&category=plugin)
+
 ### Manual
 
 1. Download the file from the `dist/` folder and place it in `/config/www/`.
