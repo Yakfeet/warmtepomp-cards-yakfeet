@@ -11,20 +11,7 @@ Two animated dashboard cards for Home Assistant:
 
 The fan spins, water flows, and the pipes and tank change colour with temperature. Card labels are in Dutch. Animations stop automatically if your device has "reduce motion" enabled.
 
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="images/boiler-dark.png">
-    <img src="images/boiler-light.png" alt="Atlantic Explorer V5 card" width="380">
-  </picture>
-</p>
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="images/monoblock-dark.png">
-    <img src="images/monoblock-light.png" alt="Panasonic monoblock card" width="380">
-  </picture>
-</p>
-
-<p align="center">*Example with demo values. In Home Assistant the fan and water flow animate with the live status.*</p>
+<p align="center"> <picture> <source media="(prefers-color-scheme: dark)" srcset="images/boiler-dark.gif"> <img src="images/boiler-light.gif" alt="Atlantic Explorer V5 card" width="400"> </picture> </p> <p align="center"> <picture> <source media="(prefers-color-scheme: dark)" srcset="images/monoblock-dark.gif"> <img src="images/monoblock-light.gif" alt="Panasonic monoblock card" width="400"> </picture> </p> <p align="center">*Example with demo values. In Home Assistant the fan and water flow animate with the live status.*</p>
 
 The idea comes from [AMensink/warmtepomp-cards](https://github.com/AMensink/warmtepomp-cards) (MIT). These cards were rebuilt from scratch for different devices.
 
