@@ -11,6 +11,21 @@ Twee geanimeerde dashboardkaarten voor Home Assistant:
 
 De ventilator draait, het water stroomt en de leidingen en de tank kleuren mee met de temperatuur. Alle labels zijn in het Nederlands. Animaties stoppen automatisch als je apparaat "verminderde beweging" heeft ingesteld.
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="images/boiler-dark.png">
+    <img src="images/boiler-light.png" alt="Atlantic Explorer V5-kaart" width="380">
+  </picture>
+</p>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="images/monoblock-dark.png">
+    <img src="images/monoblock-light.png" alt="Panasonic monoblock-kaart" width="380">
+  </picture>
+</p>
+
+<p align="center">*Voorbeeld met demowaarden. In Home Assistant bewegen de ventilator en de waterstroom mee met de live status.*</p>
+
 Het idee komt van [AMensink/warmtepomp-cards](https://github.com/AMensink/warmtepomp-cards) (MIT). Deze kaarten zijn opnieuw opgebouwd voor andere apparaten.
 
 ---
