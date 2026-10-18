@@ -1,4 +1,6 @@
 {
-  "name": "Warmtepomp Cards",
-  "render_readme": true
+  "name": "Warmtepomp Cards Yakfeet",
+  "filename": "warmtepomp-cards-yakfeet.js",
+  "render_readme": true,
+  "homeassistant": "2024.1.0"
 }
