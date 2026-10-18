@@ -3,6 +3,8 @@ Geanimeerde Home Assistant-kaarten voor een monoblock Panasonic warmtepomp en At
 
 # Warmtepomp Cards voor Home Assistant
 
+🇬🇧 [English version](README.en.md)
+
 Twee geanimeerde dashboardkaarten voor Home Assistant:
 
 | Kaart | Type | Voor |
